@@ -1,0 +1,1 @@
+(()=>{"use strict";!async function(){try{let o={method:"DELETE",headers:{"Content-Type":"application/json"}};const t="http://localhost:8000/api/usuarios/prueba",e=await fetch(t,o);if(!e.ok)throw console.log(e),new Error("No se pudo obtener la información de las categorias");const a=await e.json();console.log(a)}catch(o){console.error(o)}}()})();
