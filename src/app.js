@@ -1,96 +1,58 @@
 import { Usuario } from './clases.js'
+import * as asyncUsers from "./http-usuarios.js"
+
+const tabla = document.getElementById('tablaUsuarios')
+const insertarUsuario = document.getElementById('insertarUsuario');
 
 var users = [];
 var user;
-//obtenerUsuarios();
-//obtenerUnUsuario();
-// introducirUsuario();
-borrarUsuario();
 
-async function borrarUsuario() {
+main()
+
+//introducirUsuario();
+//borrarUsuario();
+
+
+async function main() {
     try {
-        let options = { 
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }
-        let idUsuario = 'prueba';
-        const urlBorrarUsuario = 'http://localhost:8000/api/usuarios/' + idUsuario;
-        const response = await fetch(urlBorrarUsuario, options);
-        if (!response.ok) {
-            console.log(response);
-            throw new Error('No se pudo obtener la información de las categorias');
-        }
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error(error);
-    }
+        const data = await asyncUsers.getAllUsers()
+        users = meterUsuarios(data);
+        console.log(users);
+        generarTabla(users);
 
-}
-
-async function introducirUsuario() { 
-    try {
-        let u = new Usuario("343254345","pepe", "24", 43);
-        let options = {
-            method: "POST",
-            body: JSON.stringify(u),
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }
-        const urlInsertarUsuario = 'http://localhost:8000/api/usuarios';
-        const response = await fetch(urlInsertarUsuario, options);
-        if (!response.ok) {
-            console.log(response);
-            throw new Error('No se pudo obtener la información de las categorias');
-        }
-        const data = await response.json();
-        console.log(data);
     } catch (error) {
-        console.error(error);
+        console.log(error)
     }
 }
 
-async function obtenerUnUsuario() { 
-    try {
-        const urlUsuario = 'http://localhost:8000/api/usuarios/' + '11A';
-        const response = await fetch(urlUsuario);
-        if (!response.ok) {
-            console.log(response);
-            throw new Error('No se pudo obtener la información de las categorias');
-        }
-        const data = await response.json();
-        meterUsuario(data);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-
-async function obtenerUsuarios() {
-    try {
-        const urlAllUsers = 'http://localhost:8000/api/usuarios';
-        const response = await fetch(urlAllUsers);
-        if (!response.ok) {
-            console.log(response);
-            throw new Error('No se pudo obtener la información de las categorias');
-        }
-        const data = await response.json();
-        meterUsuarios(data);
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 function meterUsuarios(data) {
     data[1].forEach(usuario => {
         let $u = new Usuario(usuario.dni, usuario.nombre, usuario.tfno, usuario.edad);
         users.push($u);
     });
+    return users;
 }
 
 function meterUsuario(data) {
     user = new Usuario(data.persona.dni, data.persona.nombre, data.persona.tfno, data.persona.edad);
 }
+
+function generarTabla(usuarios) {
+    let datos = [];
+    usuarios.forEach(function(usuario) {
+        datos.push(usuario);
+    });
+
+    datos.forEach(function(dato) {
+        let fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${dato.dni}</td>
+            <td>${dato.nombre}</td>
+            <td>${dato.tfno}</td>
+            <td>${dato.edad}</td>
+        `
+        tabla.appendChild(fila);
+    });
+}
+
