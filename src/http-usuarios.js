@@ -19,9 +19,8 @@ export async function borrarUsuario() {
     }
 }
 
-export async function introducirUsuario() { 
+export async function insertarUsuario(u) { 
     try {
-        let u = new Usuario("343254345","pepe", "24", 43);
         let options = {
             method: "POST",
             body: JSON.stringify(u),

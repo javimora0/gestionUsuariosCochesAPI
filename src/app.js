@@ -9,22 +9,16 @@ var user;
 
 main()
 
-//introducirUsuario();
-//borrarUsuario();
-
-
 async function main() {
     try {
         const data = await asyncUsers.getAllUsers()
         users = meterUsuarios(data);
-        console.log(users);
         generarTabla(users);
 
     } catch (error) {
         console.log(error)
     }
 }
-
 
 function meterUsuarios(data) {
     data[1].forEach(usuario => {
@@ -56,3 +50,20 @@ function generarTabla(usuarios) {
     });
 }
 
+async function insertUsuario(u) {
+    try {
+        const data = await asyncUsers.insertarUsuario(u)
+    }catch (error) {
+        console.log(error);
+    }
+}
+
+insertarUsuario.addEventListener('click', function() {
+    let dni = document.getElementById('dniUsuario').value;
+    let nombre = document.getElementById('nombreUsuario').value;
+    let tfno = document.getElementById('tfnoUsuario').value;
+    let edad = document.getElementById('edadUsuario').value;
+    let mensaje = document.getElementById('mensaje');
+    let u = new Usuario(dni,nombre, tfno, edad);
+    insertUsuario(u)
+});
