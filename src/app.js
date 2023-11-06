@@ -4,9 +4,8 @@ import * as asyncUsers from "./http-usuarios.js"
 const tabla = document.getElementById('tablaUsuarios')
 const insertarUsuario = document.getElementById('insertarUsuario');
 
-var users = [];
-var user;
 
+var users = [];
 main()
 
 async function main() {
@@ -17,6 +16,15 @@ async function main() {
 
     } catch (error) {
         console.log(error)
+    }
+}
+
+async function insertUsuario(u) {
+    try {
+        const data = await asyncUsers.insertarUsuario(u)
+        ponerMensaje(data)
+    }catch (error) {
+        console.log(error);
     }
 }
 
@@ -50,20 +58,31 @@ function generarTabla(usuarios) {
     });
 }
 
-async function insertUsuario(u) {
-    try {
-        const data = await asyncUsers.insertarUsuario(u)
-    }catch (error) {
-        console.log(error);
-    }
-}
+
 
 insertarUsuario.addEventListener('click', function() {
     let dni = document.getElementById('dniUsuario').value;
     let nombre = document.getElementById('nombreUsuario').value;
     let tfno = document.getElementById('tfnoUsuario').value;
     let edad = document.getElementById('edadUsuario').value;
-    let mensaje = document.getElementById('mensaje');
     let u = new Usuario(dni,nombre, tfno, edad);
     insertUsuario(u)
+
 });
+
+function ponerMensaje(data) {
+    let mensaje = document.getElementById('mensaje');
+    if (data.mensaje == 'Registro insertado correctamente') {
+        mensaje.textContent = 'Usuario insertado correctamente'
+        vaciarTabla()
+        users.splice(0, users.length);
+        main();
+    }else {
+        mensaje.textContent = 'Error al insertar usuario'
+    }
+}
+function vaciarTabla() { 
+    for (let i = tabla.rows.length - 1; i > 0; i--) {
+        tabla.deleteRow(i);
+    }
+}
