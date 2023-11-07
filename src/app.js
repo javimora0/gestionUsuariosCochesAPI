@@ -2,10 +2,14 @@ import { Usuario } from './clases.js'
 import * as asyncUsers from "./http-usuarios.js"
 
 const tabla = document.getElementById('tablaUsuarios')
-const insertarUsuario = document.getElementById('insertarUsuario');
-
+const insertarUsuario = document.getElementById('insertarUsuario')
+const eliminarUsuario = document.getElementById('eliminarUsuario')
+const mensajeBorrado = document.getElementById('mensajeBorrado')
+const mensajeInsertado = document.getElementById('mensaje');
 
 var users = [];
+
+
 main()
 
 async function main() {
@@ -28,16 +32,29 @@ async function insertUsuario(u) {
     }
 }
 
+async function eliminarUser(dni) {
+    try {
+        const data = await asyncUsers.borrarUsuario(dni)
+        ponerMensajeBorrado(data['Registros borrados'])
+    } catch (error) { 
+
+    }
+}
+
+function ponerMensajeBorrado(data) { 
+    if (data == 0) {
+        mensajeBorrado.textContent = 'Usuario no encontrado'
+    }else {
+        mensajeBorrado.textContent = 'Usuario borrado'
+    }
+}
+
 function meterUsuarios(data) {
     data[1].forEach(usuario => {
         let $u = new Usuario(usuario.dni, usuario.nombre, usuario.tfno, usuario.edad);
         users.push($u);
     });
     return users;
-}
-
-function meterUsuario(data) {
-    user = new Usuario(data.persona.dni, data.persona.nombre, data.persona.tfno, data.persona.edad);
 }
 
 function generarTabla(usuarios) {
@@ -58,7 +75,21 @@ function generarTabla(usuarios) {
     });
 }
 
-
+function ponerMensaje(data) {
+    if (data.mensaje == 'Registro insertado correctamente') {
+        mensajeInsertado.textContent = 'Usuario insertado correctamente'
+        vaciarTabla()
+        users.splice(0, users.length);
+        main();
+    }else {
+        mensajeInsertado.textContent = 'Error al insertar usuario'
+    }
+}
+function vaciarTabla() { 
+    for (let i = tabla.rows.length - 1; i > 0; i--) {
+        tabla.deleteRow(i);
+    }
+}
 
 insertarUsuario.addEventListener('click', function() {
     let dni = document.getElementById('dniUsuario').value;
@@ -67,22 +98,8 @@ insertarUsuario.addEventListener('click', function() {
     let edad = document.getElementById('edadUsuario').value;
     let u = new Usuario(dni,nombre, tfno, edad);
     insertUsuario(u)
-
 });
 
-function ponerMensaje(data) {
-    let mensaje = document.getElementById('mensaje');
-    if (data.mensaje == 'Registro insertado correctamente') {
-        mensaje.textContent = 'Usuario insertado correctamente'
-        vaciarTabla()
-        users.splice(0, users.length);
-        main();
-    }else {
-        mensaje.textContent = 'Error al insertar usuario'
-    }
-}
-function vaciarTabla() { 
-    for (let i = tabla.rows.length - 1; i > 0; i--) {
-        tabla.deleteRow(i);
-    }
-}
+eliminarUsuario.addEventListener('click', function() {
+    eliminarUser(document.getElementById('dniUsuarioBorrado').value)
+})

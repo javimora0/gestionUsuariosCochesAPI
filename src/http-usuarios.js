@@ -1,4 +1,4 @@
-export async function borrarUsuario() {
+export async function borrarUsuario(idUsuario) {
     try {
         let options = { 
             method: "DELETE",
@@ -6,7 +6,6 @@ export async function borrarUsuario() {
                 'Content-Type': 'application/json',
             }
         }
-        let idUsuario = 'prueba';
         const urlBorrarUsuario = 'http://localhost:8000/api/usuarios/' + idUsuario;
         const response = await fetch(urlBorrarUsuario, options);
         if (!response.ok) {
